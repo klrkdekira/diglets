@@ -1,0 +1,9 @@
+# Unfriend these!!!
+*~
+*.pyc
+*.rej
+*.orig
+bin
+develop-eggs
+eggs
+parts
