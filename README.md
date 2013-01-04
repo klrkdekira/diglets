@@ -1,4 +1,11 @@
 diglets
 =======
+It digs the shit out of you
 
-It digs the shit out of you alright?
+How to install
+--------------
+
+$ python bootstrap.py
+$ bin/buildout
+
+
