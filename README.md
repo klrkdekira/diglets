@@ -1,4 +1,4 @@
-B1;2802;0cdiglets
+diglets
 =======
 It digs the shit out of you
 
