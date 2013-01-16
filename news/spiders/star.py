@@ -21,8 +21,14 @@ class StarSpider(XMLFeedSpider):
     itertag = 'item' # change it accordingly
 
     def parse_node(self, response, selector):
+
         i = NewsItem()
-        #i['url'] = selector.select('url').extract()
-        #i['name'] = selector.select('name').extract()
-        #i['description'] = selector.select('description').extract()
+        i['title'] = selector.select('title/text()').extract()[0]
+        i['link'] = selector.select('link/text()').extract()[0]
+        i['description'] = selector.select('description/text()').extract()[0]
+        i['guid'] = selector.select('guid/text()').extract()[0]
+        # Date format
+        # Wed, 16 Jan 2013 06:15:00 +0000
+        i['pubDate'] = selector.select('pubDate/text()').extract()[0]
         return i
+

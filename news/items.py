@@ -6,10 +6,10 @@
 from scrapy.item import Item, Field
 
 class NewsItem(Item):
-    site = Field()
-    link = Field()
     title = Field()
-    html = Field()
-    content = Field()
-    tags = Field()
+    link = Field()
+    description = Field()
+    guid = Field()
+    pubDate = Field()
 
+    

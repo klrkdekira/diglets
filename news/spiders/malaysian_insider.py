@@ -36,11 +36,13 @@ class MalaysianInsiderSpider(XMLFeedSpider):
         guid = selector.select('guid/text()').extract()
         date = selector.select('dc:date/text()').extract()
 
-        # print title
-        # print link
-        # print description
-        # print pubDate
-        # print guid
-        # print date
+        print title
+        print link
+        print description
+        print pubDate
+        print guid
+        print date
+        # 2013-01-05T15:12:42+00:00
+        
         i = NewsItem()
         return i
