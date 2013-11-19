@@ -1,5 +1,7 @@
 # Unfriend these!!!
 *~
+.installed.cfg
+.scrapy/
 *.pyc
 *.rej
 *.orig
