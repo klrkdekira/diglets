@@ -15,5 +15,7 @@ SPIDER_MODULES = ['parliament.spiders']
 NEWSPIDER_MODULE = 'parliament.spiders'
 
 DOWNLOADER_MIDDLEWARE = {
-    'parliament.middlewares.RetryChangeProxyMiddleWare': 600
+    'diglets.middlewares.RetryChangeProxyMiddleWare': 600,
+    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
+    # 'diglets.middlewares.ProxyMiddleWare': 100,
 }

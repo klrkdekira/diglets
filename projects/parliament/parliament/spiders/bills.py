@@ -1,6 +1,5 @@
 import time
 import urllib
-import urlparse
 import re
 
 from scrapy.http import Request
