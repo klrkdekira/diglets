@@ -6,16 +6,11 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-BOT_NAME = 'news'
+from diglets.settings import *
 
 SPIDER_MODULES = ['news.spiders']
 NEWSPIDER_MODULE = 'news.spiders'
 
 DOWNLOADER_MIDDLEWARE = {
     'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
-    'diglets.middlewares.ProxyMiddleWare': 100,
-    'diglets.middlewares.RetryChangeProxyMiddleWare': 300
 }
-
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'news (+http://www.yourdomain.com)'

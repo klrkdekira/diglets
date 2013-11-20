@@ -1,7 +1,7 @@
 from scrapy.spider import BaseSpider
 
-class TestSpider(BaseSpider):
-    name = 'test'
+class JsonIPSpider(BaseSpider):
+    name = 'jsonip'
     allowed_domains = ['jsonip.com']
     start_urls = ["http://jsonip.com"]
     
