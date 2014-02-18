@@ -1,9 +1,15 @@
-from scrapy.spider import BaseSpider
+import re
+import datetime
+
+from scrapy.spider import Spider
 from scrapy.selector import Selector
 
 from parliament.items import ParliamentBill
 
-class CurrentBillsSpider(BaseSpider):
+DOMAIN = 'http://www.parlimen.gov.my'
+DATE_FORMAT = "%d/%M/%Y"
+
+class CurrentBillsSpider(Spider):
     name = "current_bills"
     allowed_domains = ["www.parlimen.gov.my"]
     start_urls = (
@@ -32,23 +38,55 @@ class CurrentBillsSpider(BaseSpider):
         history = cols[3].xpath('div/div[@id="pgdivbox"]/table/tr')
             
         i = ParliamentBill()
-        i['bill_reference_id'] = document_name
+        # Irrelevant entry for web based records
+        # i['bill_reference_id'] = document_name
         i['description'] = description
         i['year'] = year
         i['name'] = document_name
-        i['document'] = {'name': document_name,
-                         'url': document_url}
-        i['status'] = status
 
-        i['history'] = []
+        document = re.findall('\((.*)\)', document_url)
+        if document:
+            document_url, document_name = document[0].replace("'", '').split(',')
+            i['document'] = {'name': document_name,
+                             'url': DOMAIN + document_url}
+
+        status = status.strip().lower()
+        if status == 'lulus':
+            i['status'] = 'passed'
+        elif status == 'ditarik balik':
+            i['status'] = 'withdrawn'
+        elif status == 'bacaan kali kedua dan ketiga':
+            i['status'] = 'second and third reading'
+        else:
+            i['status'] = status
+
+        i['history'] = {'first_reading': None,
+                        'second_reading': None,
+                        'passed_at': None}
+        
         for h in history:
             fields = h.xpath('td')
-            t = []
             for f in fields:
                 item = f.xpath('text()').extract()
-                if item:
-                    t.append(item[0].strip())
-
-            if t:
-                i['history'].append(''.join(t))
+                if not item:
+                    # Skip if no value found
+                    continue
+                item = item[0].strip()
+                field_value_pair = item.split(':')
+                if len(field_value_pair) < 2:
+                    # Nothing to do if nothing to unpack
+                    continue
+                field, value = field_value_pair
+                if not value:
+                    continue
+                if "bacaan pertama pada" in field.lower():
+                    i['history']['first_reading'] = datetime.datetime.strptime(value, DATE_FORMAT)
+                elif "bacaan kedua pada" in field.lower():
+                    i['history']['second_reading'] = datetime.datetime.strptime(value, DATE_FORMAT)
+                elif "dibentang oleh" in field.lower():
+                    # Extract only the name
+                    # Second part is the current position
+                    i['presented_by'] = value.split(',')[0]
+                elif "diluluskan pada" in field.lower():
+                    i['history']['passed_at'] = datetime.datetime.strptime(value, DATE_FORMAT)
         return i

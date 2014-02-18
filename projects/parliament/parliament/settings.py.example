@@ -11,6 +11,18 @@ from diglets.settings import *
 SPIDER_MODULES = ['parliament.spiders']
 NEWSPIDER_MODULE = 'parliament.spiders'
 
+# MONGODB_REPLICA_SET = 'rs0'
+# MONGODB_REPLICA_HOSTS = 'host0,host1'
+MONGODB_URI = 'mongodb://localhost:27017'
+MONGODB_DATABASE = 'bill_dump'
+MONGODB_COLLECTION = 'bills'
+# MONGODB_BUFFER_DATA = 10
+MONGODB_ADD_TIMESTAMP = True
+
 DOWNLOADER_MIDDLEWARE = {
     'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
+}
+
+ITEM_PIPELINES = {
+    'scrapy_mongodb.MongoDBPipeline': 30,
 }

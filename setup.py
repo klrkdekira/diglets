@@ -7,6 +7,10 @@ README = open(os.path.join(here, 'README.md')).read()
 
 requires = [
     'scrapy',
+    'scrapy-mongodb',
+    'simplejson',
+    'pymongo',
+    'elasticsearch'
     ]
 
 setup(name='diglets',
@@ -17,7 +21,7 @@ setup(name='diglets',
         "Programming Language :: Python",
         ],
       author='motionman',
-      author_email='klrkdekira@gmail.com',
+      author_email='motionman@sinarproject.org',
       url='',
       keywords='scrapy',
       packages=find_packages(),

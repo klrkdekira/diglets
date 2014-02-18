@@ -25,6 +25,7 @@ develop-eggs
 lib
 lib64
 .scrapy
+settings.py
 
 # Installer logs
 pip-log.txt
