@@ -10,11 +10,12 @@ requires = [
     'scrapy-mongodb',
     'simplejson',
     'pymongo',
-    'elasticsearch'
+    'elasticsearch',
+    'incapsula-cracker'
     ]
 
 setup(name='diglets',
-      version='0.0',
+      version='0.1',
       description='diglets',
       long_description=README,
       classifiers=[

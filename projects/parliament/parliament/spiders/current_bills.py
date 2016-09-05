@@ -1,22 +1,31 @@
 import re
 import datetime
 
-from scrapy.spider import Spider
+from scrapy.http import Request
+from scrapy.spiders import Spider
 from scrapy.selector import Selector
 
 from parliament.items import ParliamentBill
 
 DOMAIN = 'http://www.parlimen.gov.my'
 DATE_FORMAT = "%d/%M/%Y"
+COOKIE_KEY = 0
 
 class CurrentBillsSpider(Spider):
     name = "current_bills"
     allowed_domains = ["www.parlimen.gov.my"]
     start_urls = (
         'http://www.parlimen.gov.my/bills-dewan-rakyat.html?uweb=dr&',
-        )
+    )
 
     def parse(self, response):
+        yield Request(self.start_urls[0],callback=self.parse_page)
+        # hxs = Selector(response)
+        # rows = hxs.xpath('//table[@id="mytable"]/tr')
+        # rows.pop(0)
+        # return map(self.parse_item, rows)
+
+    def parse_page(self, response):
         hxs = Selector(response)
         rows = hxs.xpath('//table[@id="mytable"]/tr')
         rows.pop(0)
@@ -30,13 +39,13 @@ class CurrentBillsSpider(Spider):
         document_url = info.xpath('@onclick').extract()[0].strip()
 
         year = cols[1].xpath('text()').extract()[0].strip()
-            
+
         description = cols[2].xpath('text()').extract()[0].strip()
 
         status = cols[3].xpath('div[@class="parent"]/text()').extract()[0].strip()
 
         history = cols[3].xpath('div/div[@id="pgdivbox"]/table/tr')
-            
+
         i = ParliamentBill()
         # Irrelevant entry for web based records
         # i['bill_reference_id'] = document_name
@@ -63,7 +72,7 @@ class CurrentBillsSpider(Spider):
         i['history'] = {'first_reading': None,
                         'second_reading': None,
                         'passed_at': None}
-        
+
         for h in history:
             fields = h.xpath('td')
             for f in fields:

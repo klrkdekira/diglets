@@ -4,7 +4,7 @@ import datetime
 import re
 
 from scrapy.http import Request
-from scrapy.spider import Spider
+from scrapy.spiders import Spider
 from scrapy.selector import Selector
 
 from parliament.items import ParliamentBill
@@ -18,7 +18,7 @@ class BillsSpider(Spider):
     name = 'bills'
     allowed_domains = ['www.parlimen.gov.my']
     start_urls = ["http://www.parlimen.gov.my/bills-dewan-rakyat.html?uweb=dr&arkib=yes&ajx=0"]
-    
+
     def parse(self, response):
         xs = Selector(response)
         items = xs.xpath('/tree/item')
@@ -42,7 +42,7 @@ class BillsSpider(Spider):
     def _parse_item(self, item):
         i = ParliamentBill()
         i['bill_reference_id'] = item.xpath('@id').extract()[0]
-        
+
         description_text = item.xpath('@text').extract()[0]
         name, description = description_text.split(' - ')
         i['name'] = name.strip()
@@ -62,7 +62,7 @@ class BillsSpider(Spider):
         i['year'] = i['bill_reference_id'].split('_')[1]
 
         metadata_id = '{0}_1'.format(i['bill_reference_id'])
-        metadata = item.xpath('item[@id="{0}"]'.format(metadata_id))            
+        metadata = item.xpath('item[@id="{0}"]'.format(metadata_id))
 
         document_metadata = metadata.xpath('userdata[@name="myurl"]/text()')
         if document_metadata:
@@ -99,5 +99,5 @@ class BillsSpider(Spider):
                 # Second part is the current position
                 i['presented_by'] = value.split(',')[0]
             elif "diluluskan pada" in field.lower():
-                i['history']['passed_at'] = datetime.datetime.strptime(value, DATE_FORMAT)                
+                i['history']['passed_at'] = datetime.datetime.strptime(value, DATE_FORMAT)
         return i
